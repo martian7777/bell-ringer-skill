@@ -78,6 +78,54 @@ git clone https://github.com/martian7777/bell-ringer-skill.git $env:USERPROFILE\
 
 ---
 
+## 🔔 Permission-prompt bells (one-time hook setup)
+
+The skill alone covers the **start** and **end** of each turn. It cannot ring the bell when Claude Code pauses to ask you something like *"Do you want to continue?"* or *"Allow PowerShell tool?"* — during those prompts Claude's turn is paused, so no skill instruction can run. Those bells must be fired by the harness itself via a **Notification hook** in `settings.json`.
+
+Merge the snippet below into `~/.claude/settings.json` (Windows: `%USERPROFILE%\.claude\settings.json`), then restart Claude Code.
+
+#### 🪟 Windows
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"[console]::beep(800,200)\""
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+#### 💻 macOS / Linux
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "printf '\\a'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+If your `settings.json` already has other top-level keys, merge the `"hooks"` block into the existing object rather than replacing the file.
+
+---
+
 ## 🛠️ Configuration & Customization
 
 If you prefer custom sound effects, melodies, or voice notifications instead of the default terminal beep, you can easily customize the actions. Open `SKILL.md` in your favorite editor and modify the bell commands.
